@@ -51,15 +51,6 @@ guardrail_messages = [
     {"role": "user", "content": ai_output},
 ]
 
-#### WRITE OUR CODE BELOW###
-
-
-
-
-
-is_blocked = False
-##############################
-
 print("\n=== Guardrail Check Result ===")
 if is_blocked:
     print(
