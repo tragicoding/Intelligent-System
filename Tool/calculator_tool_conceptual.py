@@ -1,0 +1,167 @@
+from openai.types.responses import Response
+import json
+from openai.types.chat import ChatCompletion
+from openai import OpenAI
+from dotenv import load_dotenv
+
+# .env 파일 로드
+load_dotenv()
+
+SYSTEM_PROMPT = {
+    "role": "system",
+    "content": """
+Return only raw JSON.
+Do not wrap the response in markdown code blocks.
+Do not add any explanation outside JSON.
+
+You have access to the following functions:
+- add(a, b)
+- subtract(a, b)
+- multiply(a, b)
+- divide(a, b)
+
+Your task has two modes.
+
+MODE 1: Function Call Mode
+If the user's question requires one of the available math functions,
+return only a JSON object that specifies which function should be called.
+
+The JSON format must be:
+
+{
+    "type": "function_call",
+    "function_name": "FUNCTION_NAME",
+    "kwargs": {
+        "a": number,
+        "b": number
+    }
+}
+
+Available function names:
+- add
+- subtract
+- multiply
+- divide
+
+Examples:
+
+User: What is 1 + 10?
+
+AI:
+{
+    "type": "function_call",
+    "function_name": "add",
+    "kwargs": {
+        "a": 1,
+        "b": 10
+    }
+}
+
+User: What is 10 - 3?
+
+AI:
+{
+    "type": "function_call",
+    "function_name": "subtract",
+    "kwargs": {
+        "a": 10,
+        "b": 3
+    }
+}
+
+User: What is 4 * 5?
+
+AI:
+{
+    "type": "function_call",
+    "function_name": "multiply",
+    "kwargs": {
+        "a": 4,
+        "b": 5
+    }
+}
+
+User: What is 20 / 4?
+
+AI:
+{
+    "type": "function_call",
+    "function_name": "divide",
+    "kwargs": {
+        "a": 20,
+        "b": 4
+    }
+}
+
+
+MODE 2: Final Answer Mode
+If the user provides the result of a function call,
+use that result to answer the original question.
+When returning the final answer, write it as a natural sentence.
+Do not only repeat the equation.
+
+The JSON format must be:
+
+{
+    "type": "final_answer",
+    "answer": "ANSWER_TEXT"
+}
+Example:
+
+User: The result of add(1, 10) is 11.
+
+AI:
+
+{
+    "type": "final_answer",
+    "answer": "After calculating it, the answer is 11."
+}
+
+User: The result of multiply(4, 5) is 20.
+
+AI:
+
+{
+    "type": "final_answer",
+    "answer": "After running the calculation, the result is 20."
+
+}
+
+Important rules:
+- If a calculation is needed, do not calculate it yourself.
+- Instead, return a function_call JSON.
+- If the function result is provided by the user, return a final_answer JSON.
+- Always return valid JSON only.
+""",
+}
+
+
+def add(a, b):
+    return a + b
+
+
+def subtract(a, b):
+    return a - b
+
+
+def multiply(a, b):
+    return a * b
+
+
+def divide(a, b):
+    return a / b
+
+
+FN_LOOK_UP = {"add": add, "subtract": subtract, "multiply": multiply, "divide": divide}
+
+messages = [SYSTEM_PROMPT]
+question = input("Ask math to AI: ")
+messages.append({"role": "user", "content": question})
+
+client = OpenAI()
+
+response: Response = client.responses.create(
+    model="gpt-4o",
+    input=messages,
+)
+print(response.output_text)
