@@ -1,0 +1,47 @@
+# Python 캐시 및 바이트코드
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 가상환경
+.venv/
+venv/
+env/
+ENV/
+
+# 환경변수 및 로컬 비밀 설정
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# 빌드 및 패키징 결과
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# 테스트 및 분석 도구 캐시
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# Jupyter Notebook 임시 파일
+.ipynb_checkpoints/
+
+# IDE 개인 설정
+.vscode/
+.idea/
+
+# 로그
+*.log
+
+# 운영체제 생성 파일
+Thumbs.db
+Desktop.ini
+.DS_Store

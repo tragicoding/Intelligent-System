@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 
 # .env 파일 로드
 load_dotenv()
+client = OpenAI()
 
 SYSTEM_PROMPT = {
     "role": "system",
@@ -17,14 +18,11 @@ SYSTEM_PROMPT = {
 }
 
 messages = [SYSTEM_PROMPT]
-question = input("Ask math to AI: ")
-messages.append({"role": "user", "content": question})
-
-client = OpenAI()
-
+question = input("Ask to AI: ")
+messages.append({"role" : "user","content":question})
 response: Response = client.responses.create(
-    model="gpt-4o",
-    input=messages,
-)
+    model = "gpt-4o-mini",
+    input = messages
 
+)
 print(response.output_text)
